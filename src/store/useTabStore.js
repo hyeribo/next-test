@@ -29,10 +29,21 @@ export const useTabStore = create((set, get) => ({
           key,
           label,
           children: <Component />,
-          // children: "hello",
         },
       ],
+      currentTabKey: key,
     }));
   },
-  removeTab: () => {},
+  removeTab: ({ key }) => {
+    const currentTabs = get().tabs;
+    const targetTabIndex = currentTabs.findIndex((tab) => tab.key === key);
+    if (targetTabIndex > -1) {
+      console.log("removeTab =====>", key);
+      const nextTabs = currentTabs.filter((tab) => tab.key !== key);
+      set((state) => ({
+        tabs: nextTabs,
+        currentTabKey: nextTabs[nextTabs.length - 1].key,
+      }));
+    }
+  },
 }));

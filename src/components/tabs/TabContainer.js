@@ -10,7 +10,7 @@ import { useTabStore } from "@/store/useTabStore";
 
 const TabContainer = () => {
   const tabStore = useTabStore();
-  const { tabs, currentTabKey, changeCurrentTab } = tabStore;
+  const { tabs, currentTabKey, changeCurrentTab, removeTab } = tabStore;
 
   const [seperatedMode, setSeperatedMode] = useState("none"); // none, horizontal, vertical
 
@@ -77,6 +77,7 @@ const TabContainer = () => {
   const handleClickRemove = (e) => {
     e.stopPropagation();
     console.log("remove!");
+    removeTab({ key: currentTabKey });
   };
 
   const renderContent = useCallback(
@@ -108,14 +109,20 @@ const TabContainer = () => {
             return (
               <div
                 key={tab.key}
-                className="bg-white ph-3 h-full min-w-[100px] inline-flex justify-center items-center rounded-tl-[10px] rounded-tr-[10px] gap-x-2 cursor-pointer"
+                className={`${
+                  tab.key === currentTabKey
+                    ? "bg-blue-200 border border-b-0 border-blue-300"
+                    : "bg-white"
+                } ph-3 h-full min-w-[100px] inline-flex justify-center items-center rounded-tl-[10px] rounded-tr-[10px] gap-x-2 cursor-pointer`}
                 onClick={() => handleClickTab(tab)}
               >
                 <span className="text-sm">{tab.label}</span>
-                <CloseOutlined
-                  className="text-sm"
-                  onClick={handleClickRemove}
-                />
+                {tabs.length === 1 ? null : (
+                  <CloseOutlined
+                    className="text-sm"
+                    onClick={handleClickRemove}
+                  />
+                )}
               </div>
             );
           })}
